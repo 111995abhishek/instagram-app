@@ -12,9 +12,18 @@
   padding:10px;
   border-bottom: 1px solid lightgray;
   object-fit: contain;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .app-header-image{
   width: 100px;
   height:60 px;
+  object-fit: contain;
+}
+
+.signup{
+  display: flex;
+  flex-direction: column;
 }
