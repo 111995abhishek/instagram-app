@@ -1,10 +1,6 @@
 import './App.css';
 import instagramlogo from './instagramlogo.png';
 import Posts from './posts';
-import reactlogo from './reactimage.png';
-import dog from './puppy.jpg';
-import nature from './nature.jpg';
-import celeb from './celeb.jpg';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from './firebase';
 import { makeStyles } from '@material-ui/core';
@@ -52,7 +48,7 @@ function App() {
   const [user, setUser] = React.useState(null);
 
   useEffect(() => {
-    const unsubscribe=auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         console.log(authUser);
         setUser(authUser);
@@ -61,14 +57,14 @@ function App() {
         setUser(null);
       }
     })
-    return() =>{
+    return () => {
       unsubscribe();
     }
-  }, [user,username]);
+  }, [user, username]);
 
 
   useEffect(() => {
-    db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
         post: doc.data()
@@ -90,12 +86,12 @@ function App() {
       .catch((error) => alert(error.message));
   }
 
-  const SignIn = (event) =>{
+  const SignIn = (event) => {
     event.preventDefault();
 
     auth
-    .signInWithEmailAndPassword(email,password)
-    .catch((error)=>alert(error.message))
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => alert(error.message))
 
     setOpensignin(false);
   }
@@ -163,23 +159,27 @@ function App() {
       <div className="app_header">
         <img className="app-header-image" src={instagramlogo} alt="" />
         {user ?
-        (<Button onClick={() => auth.signOut()}>logout</Button>)
-        : (<div className="app_logincontainer">
-          <Button onClick={() => setOpensignin(true)}>signin</Button>
-          <Button onClick={() => setOpen(true)}>signup</Button>
-        </div>
-        )}
+          (<Button onClick={() => auth.signOut()}>logout</Button>)
+          : (<div className="app_logincontainer">
+            <Button onClick={() => setOpensignin(true)}>signin</Button>
+            <Button onClick={() => setOpen(true)}>signup</Button>
+          </div>
+          )}
       </div>
-      
 
-      <h1>lets build an instagram clone</h1>
-      {
-        posts.map(({ id, post }) => (
-          <Posts key={id} username={post.username} caption={post.caption} imageurl={post.imageurl} />
-        ))
-      }
-       {user?.displayName ?(<ImageUpload username = {user.displayName}/>)
-      :(<h3>Sorry!!! you need to login to upload</h3>)
+
+      <div className="app_posts">
+        {
+          posts.map(({ id, post }) => (
+            <Posts key={id} postId={id} user={user} username={post.username} caption={post.caption} imageurl={post.imageurl} />
+          ))
+          
+        }
+
+      </div>
+
+      {user?.displayName ? (<ImageUpload username={user.displayName} />)
+        : (<h3>Sorry!!! you need to login to upload</h3>)
       }
       {/* <Posts username="Abhishek" caption ="woow it is great" imageurl={reactlogo}/>
       <Posts username="farheen" caption="its so cute" imageurl={dog}/>
